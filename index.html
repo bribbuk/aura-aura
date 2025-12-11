@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TanVex92 Direct Transmission</title>
+
+<style>
+  body {
+    background: #262626;
+    color: #ffcc00;
+    margin: 0;
+    padding: 0px;
+    line-height: 1.1;
+    font-family: monospace;
+    font-weight: 800; /* makes it chunkier, more terminal-like */
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 2px #EBFA7A;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    font-family: monospace;
+    font-weight: 1000;
+    letter-spacing: 0.05em;
+    color: #ffcc00;
+    text-shadow: 0 0 3px #EBFA7A;
+    margin-top: 30px;
+    letter-spacing: 1px;
+  }
+
+  p.small {
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin-bottom: 20px;
+  }
+
+  p.bodytext {
+    margin-top: 20px;
+    font-size: 1.3em;
+  }
+  
+  .typeout {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 1.4em; /* prevents layout shift */
+    width: min(32ch, 100%);   /* prevents pushing the button */
+    font-family: monospace;
+    font-size: 1.1em;
+    font-weight: 600; /* makes it chunkier, more terminal-like */
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 4px #EBFA7A;
+
+    /* typing animation + fadeout */
+    animation: typing 6s steps(60, end) infinite;
+  }
+
+  /* THE NEW, PROPER TERMINAL CURSOR */
+  .typeout::after {
+    content: "▉";                 /* block cursor */
+    display: inline-block;
+    margin-left: 4px;
+    color: #ffcc00;
+    text-shadow: 0 0 4px #EBFA7A;
+    animation: cursorBlink 0.8s step-end infinite;
+  }
+
+  /* typing effect (no deletion) */
+  @keyframes typing {
+    0%  { width: 0;   opacity: 1; }
+    40% { width: 100%; opacity: 1; }
+    60% { width: 100%; opacity: 1; }
+    90% { width: 100%; opacity: 1; }
+    95% { width: 100%; opacity: 0; }
+    100%{ width: 100%; opacity: 0; }
+  }
+
+  /* NEW cursor blink animation */
+  @keyframes cursorBlink {
+    0%, 50% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  
+  .button {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 14px 24px;
+    background: #ffcc00;
+    color: #262626;
+    text-decoration: none;
+    font-weight: bold;
+    font-family: monospace;
+    letter-spacing: 0.05em;
+    border-radius: 0px;
+    text-shadow: 0 0 3px #322B1A;
+    border: 2px solid #ffcc00;
+    box-shadow: 0 0 3px #EBFA7A, 0 0 0px #EBFA7A inset;
+  }
+
+  .button:hover {
+    background: #e6b800;
+    border-color: #e6b800;
+  }
+  
+  /* SCALE WRAPPER – now neutral; no transform here */
+  .scale-container {
+    overflow: visible;
+  }
+  
+  .container {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 50px;
+
+    /* scale the content (not the CRT frame) on desktop */
+    transform: scale(1.2);
+    transform-origin: top center;
+  }
+
+  .teku-header {
+    font-family: monospace;
+    font-size: 0.85em;
+    font-weight: 900; /* makes it chunkier, more terminal-like */
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .divider {
+    border: none;
+    border-bottom: 1px solid #ffcc00;
+    opacity: 0.3;
+    margin-bottom: 20px;
+  }
+
+  .crt {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh; /* extend CRT to full viewport height */
+    width: 100%;
+    animation: crtFlicker 0.15s infinite;
+  }
+
+  /* CRT Scanlines */
+  .crt::before {
+    content: "";
+    position: absolute;
+    inset: 0;          /* <- flush with edges, no gaps */
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      rgba(0, 0, 0, 0) 2px
+    );
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+  }
+
+  /* CRT Vignette Glow */
+  .crt::after {
+    content: "";
+    position: absolute;
+    inset: 0;          /* <- also flush; no -10% tricks */
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    opacity: 0.3;
+  }
+
+  @keyframes crtFlicker {
+    0% { opacity: 0.96; }
+    50% { opacity: 1; }
+    100% { opacity: 0.97; }
+  }
+
+  /* ---------- MOBILE UI OPTIMISATION (≤600px) ---------- */
+  @media (max-width: 600px) {
+
+    /* overall font slightly bigger but not insane */
+    body {
+      font-size: 8px;
+      padding: 0;        /* ← THIS FIXES THE MOBILE BORDER */
+      margin: 0;
+    }
+
+    /* TEKU header */
+    .teku-header {
+      font-size: 1.3em;
+      letter-spacing: 0.15em;
+    }
+
+    /* transmission ID */
+    p.small {
+      font-size: 1.0em;
+    }
+
+    /* main huge title */
+    h1 {
+      font-size: 2em;
+      line-height: 1.3;
+    }
+
+    /* body text */
+    p.bodytext {
+      font-size: 1.3em;
+    }
+
+    /* typeout line */
+    .typeout {
+      font-size: 1.3em;
+    }
+
+    /* button */
+    .button {
+      font-size: 1.4em;
+      padding: 16px 24px;
+    }
+
+    /* adjust container so text isn't glued to edges */
+    .container {
+      transform: none;
+      padding: 20px;     /* internal spacing moved here */
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="scale-container">
+    <div class="crt">
+      <div class="container">
+
+        <p class="teku-header">UNREGISTERED TEKU SLATE</p>
+        <hr class="divider">
+        <p class="small">Open-Ref Decrypted Holohexagraph "Extrinsic Blurb, Aura Aura"</p>
+
+        <div style="height: 40px;"></div>
+        
+        <h1>Aura Aura, an Extrinsic Blurb</h1>
+
+<p class="bodytext">
+Third Edition, 2198<br>
+Published by the Modernist Renaissance Cooperative, Finnsbury, Ganymede 
+</p>
+
+<p class="bodytext">
+7s (£0.70)
+</p>
+
+<p class="bodytext">
+Supplementary Words from Harriet Cade, Head Editor
+</p>
+
+<p class="bodytext">
+"Aura Aura is a photobook without text, but it is not silent. In this definitive third edition, the Cooperative presents our collection of images capturing the inhabited architectures of Ganymede’s great domes: The monumental city-habitats that hold a living threshold between ice and sky.
+</p>
+
+<p class="bodytext">
+Across its pages, light streams through the geodesic panes of reinforced glass, pooling against immense planes of astcrete and the deep, honeyed warmth of wood imported from Earth, decades ago, shaped into railings, panels, benches, sills. While the G.A.P. continues to raise questions about our shared future, these photographs depict neither ruins nor utopias, rather, voidborn continuities of human form and intention.
+</p>
+
+<p class="bodytext">
+The camera lingers on the quiet conjunctions of the organic and the engineered: synchronized drilling rigs in a slow ballet (the industry of survival); a lone dog resting in the vastness of a square before the working day begins; lichen taking hold on the painted arches of a service terminal roof, its pattern an unapologetic rebirth of earthly weatherings. In these so-called juxtapositions, the viewer might encounter a certain meditation on survival and meaning: Architecture as the vessel of a dispersed, enduring humanity.
+</p>
+
+<p class="bodytext">
+At times, beyond the domes, Jupiter rises, immense and silent, or the auroras shimmer, refracting through the glass like our very own cosmic curtains. Perhaps, if you'll permit a self-indulgence, Aura Aura invites contemplation not only of structure and design, but of belonging, of how space becomes place, and how even out here, the shapes of care and craft persist.
+</p>
+
+<p class="bodytext">
+The book remains intentionally wordless, yet each photograph carries myriad voices: the steamy hum of atmospheric machinery, the glossy tip-tap of corridors, the brush of regolite pavers, all the shared inheritance of form. It is our chronicle of flourishing through endurance, of history braided with experiment, of the enduring effort to build warmth against the cold.
+</p>
+
+<p class="bodytext">
+The 3rd and final edition of Aura Aura is dedicated to my brother, Elias, whose disappearance is a window left open on a long, frigid night. You are loved, Elias, a warmth I hope you can feel even in the vacuum of your absence."
+</p>
+
+
+        <div style="height: 100px;"></div>
+
+        <p class="typeout">▉ ▉ ▉ Audio Packet Detected </p>
+        
+        <a class="button" href="https://github.com/bribbuk/tando/raw/refs/heads/main/Tando%20Vex's%20Message%20to%20Dijon.m4a">
+          <b>EXTRACT PACKET</b>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
